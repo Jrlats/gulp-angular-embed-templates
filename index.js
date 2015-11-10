@@ -33,6 +33,9 @@ module.exports = function (options) {
     if (options.debug === true) {
         debug = true;
     }
+    if (!options.replaceArr) {
+        options.replaceArr = [];
+    }
 
     var minimizer = new Minimize(options.minimize);
 
@@ -70,8 +73,19 @@ module.exports = function (options) {
         }
 
         var relativeTemplatePath = matches[1];
-        var path = pathModule.join(filePath, relativeTemplatePath);
+        //var path = pathModule.join(filePath, relativeTemplatePath);
 
+        filePath = filePath.split("\\components")[0];
+        filePath = filePath.replace(/\\/g, "/");
+        relativeTemplatePath = relativeTemplatePath.replace('..','');
+        relativeTemplatePath = relativeTemplatePath.replace('./','/');
+        options.replaceArr.forEach(function(value){
+            relativeTemplatePath = relativeTemplatePath.replace(value,'');
+        });
+
+        var path = filePath + relativeTemplatePath;
+        console.log(filePath);
+        console.log(path);
         log('template path: ' + path);
 
         if (options.maxSize) {
